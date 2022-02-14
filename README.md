@@ -1,3 +1,3 @@
 Be-Nc-News
 
-`.env.*` is added to the `.gitignore`, anyone who wishes to clone your repo will not have access to the necessary environment variables and must request the `.env` files.
+For this repo to work, you need to create a .evn.test and a .evn.development files and put them in the main folder of this repo
