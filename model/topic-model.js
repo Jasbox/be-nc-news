@@ -5,3 +5,5 @@ exports.fetchTopics = () => {
     return rows;
   });
 };
+
+//console.log('From topic model')
