@@ -14,8 +14,8 @@ app.all("/*", (req, res) => {
   res.status(404).send({ msg: "path not found" });
 });
 
-app.use(handlePsqlErrors); //404
-app.use(handle404);        //400
+app.use(handlePsqlErrors); //400
+app.use(handle404);        //404
 app.use(handle500s);       //500
 
 module.exports = app;
