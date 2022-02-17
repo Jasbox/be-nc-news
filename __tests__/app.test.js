@@ -75,7 +75,41 @@ describe("GET", () => {
         });
     });
   });
+
+  describe("GET /api/users", () => {
+    test('status:200 should respond with an array of object should have the properties of "username"', () => {
+      return request(app)
+        .get(`/api/users`)
+        .expect(200)
+        .then((response) => {
+          expect(response.body.users).toBeInstanceOf(Array);
+          expect(response.body.users).toHaveLength(4);
+         
+          response.body.users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String)
+              })
+            );
+          });
+        });
+    });
+  });
+
+
+
+
 });
+
+
+
+
+
+
+
+
 
 describe('PATCH', () => {
   describe('/api/articles/:article_id', () => {
@@ -123,4 +157,4 @@ describe('PATCH', () => {
       });
   })
 });
-  
+
