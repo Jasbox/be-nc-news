@@ -97,22 +97,21 @@ describe('PATCH', () => {
               .send(updateArticle)
               .expect(200)
               .then((response) => {
-               // console.log(response, "<<<<<<<<<<<<<")
                   expect(response.body).toEqual(expected)
           })
       })
     });
     describe('patchArticle', () => {
-      test('status: 400, returns an empty object', () => {
+      test('status: 400, returns with error message when missing required filed', () => {
           return request(app)
           .patch("/api/articles/2")
           .send({})
           .expect(400)
           .then((response) => {
-              expect(response.body).toEqual({})
+              expect(response.body).toEqual({msg: "content missing"})
           })
       });
-      test('status: 400, returns', () => {
+      test('status: 400, returns with error message for invalid request', () => {
           const updateArticle = {votes: 'banana'}
           return request(app)
           .patch("/api/articles/2")
