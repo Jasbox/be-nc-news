@@ -10,4 +10,15 @@ exports.fetchArticles = (id) => {
     });
 };
 
-//console.log('From articles model')
+exports.updateArticle = ( articleId, votes) => {
+   return db
+   .query(`UPDATE articles SET votes = votes + $2 
+           WHERE article_id = $1
+           RETURNING *;`,
+           [articleId, votes])
+           .then(({rows}) => {
+             return rows[0]
+           })
+}
+
+// console.log('From articles model')
