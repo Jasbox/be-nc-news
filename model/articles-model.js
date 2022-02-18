@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const articles = require("../db/data/test-data/articles");
 
 exports.fetchArticles = (id) => {
   return db
@@ -21,4 +22,12 @@ exports.updateArticle = ( articleId, votes) => {
            })
 }
 
-// console.log('From articles model')
+exports.fetchArticlesByDate = () => {
+  return db
+  .query("SELECT * FROM articles ORDER BY created_at DESC")
+  .then(({rows: articles}) => {
+         return articles
+  })
+
+}
+
