@@ -1,9 +1,9 @@
 const articles = require("../db/data/test-data/articles");
-const { fetchArticles, updateArticle, fetchArticlesByDate} = require("../model/articles-model");
+const { fetchArticlesById, updateArticle, fetchArticlesByDate, fetchArticles} = require("../model/articles-model");
 
 exports.getArticleByArticleId = (request, response, next) => {
   const { article_id: articleId } = request.params;
-  fetchArticles(articleId)
+  fetchArticlesById(articleId)
     .then((article) => response.status(200).send({ article }))
     .catch(next);
 };
@@ -25,7 +25,7 @@ exports.patchArticle = (request, response, next) => {
 };
 
 exports.getArticlesByDate = (request, response, next) => {
-   return fetchArticlesByDate()
+   return fetchArticles()
    .then((articles) => {
      response.status(200).send({articles})
    })

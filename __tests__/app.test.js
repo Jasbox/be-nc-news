@@ -3,7 +3,7 @@ const request = require("supertest");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
-const { response } = require("express");
+
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
@@ -106,14 +106,12 @@ describe("GET", () => {
         .expect(200)
         .then((response) => {
           expect(response.body.articles).toBeInstanceOf(Array);
-
           response.body.articles.forEach((article) => {
             expect(article).toEqual(
               expect.objectContaining({
                 author: expect.any(String),
                 title: expect.any(String),
                 article_id: expect.any(Number),
-                body: expect.any(String),
                 topic: expect.any(String),
                 created_at: expect.any(String),
                 votes: expect.any(Number),

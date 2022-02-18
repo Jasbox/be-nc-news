@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 const articles = require("../db/data/test-data/articles");
 
-exports.fetchArticles = (id) => {
+exports.fetchArticlesById = (id) => {
   return db
     .query("SELECT * FROM articles WHERE article_id = $1;", [id])
     .then(({ rows }) => {
@@ -22,9 +22,9 @@ exports.updateArticle = ( articleId, votes) => {
            })
 }
 
-exports.fetchArticlesByDate = () => {
+exports.fetchArticles = () => {
   return db
-  .query("SELECT * FROM articles ORDER BY created_at DESC")
+  .query("SELECT author, title, article_id,topic,created_at, votes FROM articles ORDER BY created_at DESC")
   .then(({rows: articles}) => {
          return articles
   })
