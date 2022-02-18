@@ -6,4 +6,4 @@ exports.fetchTopics = () => {
   });
 };
 
-//console.log('From topic model')
+
