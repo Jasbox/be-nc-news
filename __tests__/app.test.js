@@ -3,7 +3,7 @@ const request = require("supertest");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 const db = require("../db/connection");
-
+const { response } = require("../app");
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
@@ -42,94 +42,105 @@ describe("GET", () => {
   });
 
   describe("GET/api/articles/:article_id", () => {
-    test("status:200 when pass a valid article id should respond with return an objects with relevant the properties", () => {
+    test("status: 200 when pass a valid article id should respond with return an objects with relevant the properties", () => {
       return request(app)
         .get(`/api/articles/2`)
         .expect(200)
         .then((response) => {
           expect(response.body.article).toBeInstanceOf(Object);
-          expect(response.body.article).toEqual({
-            author: "icellusedkars",
-            title: "Sony Vaio; or, The Laptop",
-            article_id: 2,
-            body: "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
-            topic: "mitch",
-            created_at: "2020-10-16T05:03:00.000Z",
-            votes: 0,
-          });
+          expect(response.body.article).toEqual(
+            expect.objectContaining({
+              author: "icellusedkars",
+              title: "Sony Vaio; or, The Laptop",
+              article_id: 2,
+              body: "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+              topic: "mitch",
+              created_at: "2020-10-16T05:03:00.000Z",
+              votes: 0,
+            })
+          );
         });
     });
-    test("status:400 for invalid article_id  ", () => {
+    test("status: 200, an article will respond with a new comment_count property ", () => {
       return request(app)
-        .get(`/api/articles/banana`)
-        .expect(400)
+        .get("/api/articles/9")
+        .expect(200)
         .then((response) => {
-          expect(response.body.msg).toBe("bad request");
-        });
-    });
-    test("status:404 for valid but non-existent article_id", () => {
-      return request(app)
-        .get("/api/articles/9999")
-        .expect(404)
-        .then((response) => {
-          expect(response.body.msg).toBe("article not found");
+          expect(response.body.article.comment_count).toBe("2");
         });
     });
   });
 
-  describe("GET /api/users", () => {
-    test('status:200 should respond with an array of object should have the properties of "username"', () => {
-      return request(app)
-        .get(`/api/users`)
-        .expect(200)
-        .then((response) => {
-          expect(response.body.users).toBeInstanceOf(Array);
-          expect(response.body.users).toHaveLength(4);
-
-          response.body.users.forEach((user) => {
-            expect(user).toEqual(
-              expect.objectContaining({
-                username: expect.any(String),
-                name: expect.any(String),
-                avatar_url: expect.any(String),
-              })
-            );
-          });
-        });
-    });
+  test("status: 400 for invalid article_id  ", () => {
+    return request(app)
+      .get(`/api/articles/banana`)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("bad request");
+      });
   });
+  test("status: 404 for valid but non-existent article_id", () => {
+    return request(app)
+      .get("/api/articles/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("article not found");
+      });
+  });
+});
 
-  describe("GET/api/articles", () => {
-    test("status 200: should respond with an array of object should have the relevant properties", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then((response) => {
-          expect(response.body.articles).toBeInstanceOf(Array);
-          response.body.articles.forEach((article) => {
-            expect(article).toEqual(
-              expect.objectContaining({
-                author: expect.any(String),
-                title: expect.any(String),
-                article_id: expect.any(Number),
-                topic: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-              })
-            );
-          });
+describe("GET /api/users", () => {
+  test('status:200 should respond with an array of object should have the properties of "username"', () => {
+    return request(app)
+      .get(`/api/users`)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.users).toBeInstanceOf(Array);
+        expect(response.body.users).toHaveLength(4);
+
+        response.body.users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
         });
-    });
-    test("status 200: should return array with default sort by date in descending order", () => {
-      return request(app)
-        .get("/api/articles")
-        .expect(200)
-        .then((response) => {
-          expect(response.body.articles).toBeSortedBy("created_at", {
-            descending: true,
-          });
+      });
+  });
+});
+
+describe("GET/api/articles", () => {
+  test("status 200: should respond with an array of object should have the relevant properties", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toBeInstanceOf(Array);
+        response.body.articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
         });
-    });
+      });
+  });
+  test("status 200: should return array with default sort by date in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toBeSortedBy("created_at", {
+          descending: true,
+        });
+      });
   });
 });
 
@@ -157,6 +168,7 @@ describe("PATCH", () => {
         });
     });
   });
+
   describe("patchArticle", () => {
     test("status: 400, returns with error message when missing required filed", () => {
       return request(app)

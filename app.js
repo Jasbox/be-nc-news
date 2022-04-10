@@ -9,8 +9,9 @@ app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleByArticleId);
-app.get("/api/users", getUsers)
 app.patch("/api/articles/:article_id", patchArticle)
+
+app.get("/api/users", getUsers)
 app.get("/api/articles", getArticlesByDate)
 
 // 404
