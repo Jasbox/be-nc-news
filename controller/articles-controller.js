@@ -1,9 +1,10 @@
 const articles = require("../db/data/test-data/articles");
-const { fetchArticlesById, updateArticle, fetchArticlesByDate, fetchArticles} = require("../model/articles-model");
+const { fetchArticleById, updateArticle, fetchArticlesByDate, fetchArticles} = require("../model/articles-model");
 
 exports.getArticleByArticleId = (request, response, next) => {
+ 
   const { article_id: articleId } = request.params;
-  fetchArticlesById(articleId)
+  fetchArticleById(articleId)
     .then((article) => response.status(200).send({ article }))
     .catch(next);
 };
