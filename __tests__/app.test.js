@@ -111,7 +111,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe("GET/api/articles", () => {
+describe("GET /api/articles", () => {
   test("status 200: should respond with an array of object should have the relevant properties", () => {
     return request(app)
       .get("/api/articles")
@@ -141,6 +141,44 @@ describe("GET/api/articles", () => {
           descending: true,
         });
       });
+  });
+});
+
+describe('GET /api/articles/:article_id/comments', () => {
+  test('status 200: when selected by article_id should return with an array of comments', () => {
+     return request(app)
+     .get("/api/articles/1/comments")
+     .expect(200)
+     .then((response) => {
+       response.body.comments.forEach((comment) => {
+         expect(comment).toEqual(
+           expect.objectContaining({
+             article_id: expect.any(Number),
+             comment_id: expect.any(Number),
+             votes: expect.any(Number),
+             created_at: expect.any(String),
+             author: expect.any(String),
+             body: expect.any(String)
+           })
+         )
+       })
+     })
+  });
+  test('status 200: when select an article without comment return with an empty array', () => {
+    return request(app)
+    .get("/api/articles/2/comments")
+    .expect(200)
+    .then((response) => {
+      expect(response.body.comments).toEqual([])
+    })
+  });
+  test('status 404: when select an article_id not in the database return with message no article found', () => {
+     return request(app)
+     .get("/api/articles/12345/comments")
+     .expect(404)
+     .then((response) => {
+       expect(response.body).toEqual({ msg: "no article found!"})
+     })
   });
 });
 
