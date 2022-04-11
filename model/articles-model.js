@@ -20,9 +20,8 @@ exports.fetchArticleById = (article_id) => {
 };
 
 exports.updateArticle = (articleId, votes) => {
-  return db
-    .query(
-      `UPDATE articles SET votes = votes + $2 
+  return db   
+    .query(`UPDATE articles SET votes = votes + $2 
            WHERE article_id = $1
            RETURNING *;`,
       [articleId, votes]
@@ -34,9 +33,11 @@ exports.updateArticle = (articleId, votes) => {
 
 exports.fetchArticles = () => {
   return db
-    .query(
-      "SELECT author, title, article_id,topic,created_at, votes FROM articles ORDER BY created_at DESC"
-    )
+    .query(`SELECT articles.*, COUNT(comments.article_id) AS comment_count
+            FROM articles
+            LEFT JOIN comments ON articles.article_id = comments.article_id
+            GROUP BY articles.article_id
+            ORDER BY articles.created_at DESC;`)
     .then(({ rows: articles }) => {
       return articles;
     });
