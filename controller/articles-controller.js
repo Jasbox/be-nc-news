@@ -1,6 +1,6 @@
 // const articles = require("../db/data/test-data/articles");
 // const comments = require("../db/data/test-data/comments");
-const { fetchArticleById, updateArticle, fetchArticlesByDate, fetchArticles, fetchArticleComments, checkArticleExists} = require("../model/articles-model");
+const { fetchArticleById, updateArticle, fetchArticlesByDate, fetchArticles, fetchArticleComments, checkArticleExists, insertComment} = require("../model/articles-model");
 
 exports.getArticleByArticleId = (request, response, next) => {
  
@@ -40,8 +40,20 @@ exports.getArticleComments = (request,response, next) => {
     fetchArticleComments(article_id),
     checkArticleExists(article_id)
   ])
-  .then(([comments]) => {
-    response.status(200).send({comments: comments})
+  .then((comments) => {
+    response.status(200).send({comments: comments[0]})
+  })
+  .catch(next)
+}
+
+exports.postComment = (request,response, next) => {
+  const { article_id } = request.params
+  Promise.all([
+    insertComment(article_id, request.body),
+    checkArticleExists(article_id)
+  ])
+  .then((newComment)=> {
+    response.status(201).send({comment: newComment[0]})
   })
   .catch(next)
 }

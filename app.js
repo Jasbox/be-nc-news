@@ -1,6 +1,6 @@
 const express = require("express");
 const { getTopics } = require("./controller/topic-controller");
-const{getArticleByArticleId, patchArticle, getArticlesByDate, getArticleComments} = require("./controller/articles-controller")
+const{getArticleByArticleId, patchArticle, getArticlesByDate, getArticleComments, postComment} = require("./controller/articles-controller")
 const{handle500s, handlePsqlErrors, handle404} = require("./controller/error-controller")
 const {getUsers} = require("./controller/users-controller")
 
@@ -9,7 +9,9 @@ app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleByArticleId);
-app.get("/api/articles/:article_id/comments", getArticleComments)
+app.get("/api/articles/:article_id/comments", getArticleComments);
+app.post("/api/articles/:article_id/comments", postComment)
+
 app.patch("/api/articles/:article_id", patchArticle)
 
 app.get("/api/users", getUsers)
@@ -25,3 +27,4 @@ app.use(handle404);        //404
 app.use(handle500s);       //500
 
 module.exports = app;
+        
