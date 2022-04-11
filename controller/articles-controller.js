@@ -1,5 +1,6 @@
-const articles = require("../db/data/test-data/articles");
-const { fetchArticleById, updateArticle, fetchArticlesByDate, fetchArticles} = require("../model/articles-model");
+// const articles = require("../db/data/test-data/articles");
+// const comments = require("../db/data/test-data/comments");
+const { fetchArticleById, updateArticle, fetchArticlesByDate, fetchArticles, fetchArticleComments, checkArticleExists} = require("../model/articles-model");
 
 exports.getArticleByArticleId = (request, response, next) => {
  
@@ -33,6 +34,16 @@ exports.getArticlesByDate = (request, response, next) => {
    .then(next)
   }
 
-
+exports.getArticleComments = (request,response, next) => {
+  const {article_id} = request.params
+  Promise.all([
+    fetchArticleComments(article_id),
+    checkArticleExists(article_id)
+  ])
+  .then(([comments]) => {
+    response.status(200).send({comments: comments})
+  })
+  .catch(next)
+}
 
 

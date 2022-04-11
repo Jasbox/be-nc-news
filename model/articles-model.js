@@ -1,15 +1,17 @@
 const db = require("../db/connection");
-const articles = require("../db/data/test-data/articles");
+//
 
 exports.fetchArticleById = (article_id) => {
- 
   return db
-    .query(`SELECT articles.*, COUNT(comments.article_id) AS comment_count 
+    .query(
+      `SELECT articles.*, COUNT(comments.article_id) AS comment_count 
             FROM articles
             LEFT JOIN comments ON articles.article_id = comments.article_id
             WHERE articles.article_id = $1
             Group BY articles.article_id;
-    `, [article_id])
+    `,
+      [article_id]
+    )
     .then(({ rows }) => {
       if (rows.length === 0)
         return Promise.reject({ status: 404, msg: "article not found" });
@@ -17,23 +19,43 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
-exports.updateArticle = ( articleId, votes) => {
-   return db
-   .query(`UPDATE articles SET votes = votes + $2 
+exports.updateArticle = (articleId, votes) => {
+  return db
+    .query(
+      `UPDATE articles SET votes = votes + $2 
            WHERE article_id = $1
            RETURNING *;`,
-           [articleId, votes])
-           .then(({rows}) => {
-             return rows[0]
-           })
-}
+      [articleId, votes]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
 
 exports.fetchArticles = () => {
   return db
-  .query("SELECT author, title, article_id,topic,created_at, votes FROM articles ORDER BY created_at DESC")
-  .then(({rows: articles}) => {
-         return articles
-  })
+    .query(
+      "SELECT author, title, article_id,topic,created_at, votes FROM articles ORDER BY created_at DESC"
+    )
+    .then(({ rows: articles }) => {
+      return articles;
+    });
+};
 
-}
+exports.fetchArticleComments = (articleId) => {
+  return db
+    .query("SELECT * FROM comments WHERE article_id = $1;", [articleId])
+    .then(({ rows: comments }) => {
+      return comments;
+    });
+};
 
+exports.checkArticleExists = (articleId) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [articleId])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "no article found!" });
+      }
+    });
+};
