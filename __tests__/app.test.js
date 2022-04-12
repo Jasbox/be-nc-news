@@ -156,6 +156,36 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test('status 200: when requested return articles sorted by title', () => {
+     return request(app)
+     .get("/api/articles?sort_by=title")
+     .expect(200)
+     .then((response) => {
+       expect(response.body.articles).toBeSortedBy("title", {descending: true})
+     })
+  });
+  test('status 200: when requested return the articles body sorted by ascending order', () => {
+     return request(app)
+     .get("/api/articles?sort_by=body&order_by=ASC")
+     .expect(200)
+     .then((response) => {
+       expect(response.body.articles).toBeSortedBy("body", {ascending: true})
+     })
+  });
+  test('status 200: when topic cats is requested return the cats articles', () => {
+     return request(app)
+     .get("/api/articles?topic=cats")
+     .expect(200)
+     .then((response) => {
+       response.body.articles.forEach((article) => {
+         expect(article).toEqual(
+           expect.objectContaining({
+             topic: "cats",
+           })
+         )
+       })
+     })
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
