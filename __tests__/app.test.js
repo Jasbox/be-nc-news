@@ -339,3 +339,37 @@ describe("POST", () => {
     });
   });
 });
+
+describe('DELETE', () => {
+   describe('/api/comments/:comment_id', () => {
+     test('status 204 : comment deleted by comment_id', () => {
+         return request(app)
+         .delete("/api/comments/1")
+         .expect(204)
+         .then((response) => {
+           expect(response.body).toEqual({})
+
+         })
+     });
+     test('status 404: return 404 when comment no found', () => {
+        return request(app)
+        .delete('/api/comments/12345')
+        .expect(404)
+        .then((response) => {
+          expect(response.body).toEqual({
+            msg: "not found"
+          })
+        })
+      });
+      test('status 400: return 400 when comment_id invalid', () => {
+        return request(app)
+        .delete('/api/comments/banana')
+        .expect(400)
+        .then((response) => {
+         expect(response.body).toEqual({
+           msg: "bad request"
+         })
+       })
+     });
+   });
+});
