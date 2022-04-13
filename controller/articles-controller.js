@@ -1,5 +1,7 @@
 // const articles = require("../db/data/test-data/articles");
 // const comments = require("../db/data/test-data/comments");
+const { response } = require("express");
+const { request } = require("express");
 const {
   fetchArticleById,
   updateArticle,
@@ -7,6 +9,7 @@ const {
   fetchArticleComments,
   checkArticleExists,
   insertComment,
+  removeComment
   
 } = require("../model/articles-model");
 
@@ -72,3 +75,12 @@ exports.postComment = (request, response, next) => {
     })
     .catch(next);
 };
+
+exports.deleteComment = (request, response, next) => {
+  const {comment_id} = request.params
+  removeComment(comment_id)
+  .then(() => {
+    response.status(204).send()
+  })
+  .catch(next)
+}
