@@ -14,10 +14,12 @@ const {
   handlePsqlErrors,
   handle404,
 } = require("./controller/error-controller");
+const { getEndPoint} = require ('./controller/api-controller')
 
 const app = express();
 app.use(express.json());
 
+app.get("/api", getEndPoint)
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticlesByDate);
 app.get("/api/articles/:article_id", getArticleByArticleId);

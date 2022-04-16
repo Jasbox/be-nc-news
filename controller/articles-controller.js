@@ -1,7 +1,4 @@
-// const articles = require("../db/data/test-data/articles");
-// const comments = require("../db/data/test-data/comments");
-const { response } = require("express");
-const { request } = require("express");
+
 const {
   fetchArticleById,
   updateArticle,
