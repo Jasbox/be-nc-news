@@ -21,7 +21,6 @@ exports.getArticleByArticleId = (request, response, next) => {
 
 exports.patchArticle = (request, response, next) => {
   const articleId = request.params.article_id;
-  //console.log(typeof request.body.votes)
   if (typeof request.body.votes === "undefined") {
     response.status(400).send({ msg: "content missing" });
   } else if (typeof request.body.votes === "number") {
@@ -34,16 +33,12 @@ exports.patchArticle = (request, response, next) => {
 };
 
 exports.getArticlesByDate = (request, response, next) => {
-  
-  const { sort_by, order_by, topic } = request.query;
-  
+  const { sort_by, order_by, topic } = request.query; 
   Promise.all([
     fetchArticles(sort_by, order_by, topic),
     checkTopicExists(topic),
-
   ])
     .then((articles) => {
-      
       response.status(200).send({ articles: articles[0] });
     })
     .catch(next);
