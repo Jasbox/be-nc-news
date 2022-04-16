@@ -1,16 +1,16 @@
-exports.handlePsqlErrors = (err, req, res, next) => {
-  if (err.code === "22P02" || err.code === "23502")
-    res.status(400).send({ msg: "bad request" });
-  else if (err.code === "23503") res.status(404).send({ msg: "not found" });
-  else next(err);
+exports.handlePsqlErrors = (error, request, response, next) => {
+  if (error.code === "22P02" || error.code === "23502")
+    response.status(400).send({ msg: "bad request" });
+  else if (error.code === "23503") response.status(404).send({ msg: "not found" });
+  else next(error);
 };
 
-exports.handle404 = (err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send({ msg: err.msg });
-  } else next(err);
+exports.handle404 = (error, request, response, next) => {
+  if (error.status) {
+    response.status(error.status).send({ msg: error.msg });
+  } else next(error);
 };
 
-exports.handle500s = (err, req, res, next) => {
-  res.status(500).send({ msg: "server error" });
+exports.handle500s = (error, request, response, next) => {
+  response.status(500).send({ msg: "server error" });
 };
