@@ -20,10 +20,18 @@ describe("GET", () => {
     });
   });
 
+  describe('/api', () => {
+    test('status 200:, responds with JSON describing all the available endpoints on the API', () => {
+      return request(app)
+      .get("/api")
+      .expect(200)
+    });
+  });
+
   describe("GET/api/topics", () => {
     test('status:200 should respond with an array of object should have the properties of "slug" and "description', () => {
       return request(app)
-        .get(`/api/topics`)
+        .get("/api/topics")
         .expect(200)
         .then((response) => {
           expect(response.body.topics).toBeInstanceOf(Array);
@@ -44,7 +52,7 @@ describe("GET", () => {
   describe("GET/api/articles/:article_id", () => {
     test("status: 200 when pass a valid article id should respond with return an objects with relevant the properties", () => {
       return request(app)
-        .get(`/api/articles/2`)
+        .get("/api/articles/2")
         .expect(200)
         .then((response) => {
           expect(response.body.article).toBeInstanceOf(Object);
@@ -73,7 +81,7 @@ describe("GET", () => {
 
   test("status: 400 for invalid article_id  ", () => {
     return request(app)
-      .get(`/api/articles/banana`)
+      .get("/api/articles/banana")
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("bad request");
@@ -89,10 +97,10 @@ describe("GET", () => {
   });
 });
 
-describe("GET /api/users", () => {
-  test('status:200 should respond with an array of object should have the properties of "username"', () => {
+  describe("GET/api/users", () => {
+  test("status:200 should respond with an array of object should have the properties of username", () => {
     return request(app)
-      .get(`/api/users`)
+      .get("/api/users")
       .expect(200)
       .then((response) => {
         expect(response.body.users).toBeInstanceOf(Array);
@@ -111,7 +119,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe("GET /api/articles", () => {
+  describe("GET/api/articles", () => {
   test("status 200: should respond with an array of object should have the relevant properties", () => {
     return request(app)
       .get("/api/articles")
@@ -156,7 +164,7 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test('status 200: when requested return articles sorted by title', () => {
+  test("status 200: when requested return articles sorted by title", () => {
      return request(app)
      .get("/api/articles?sort_by=title")
      .expect(200)
@@ -164,7 +172,7 @@ describe("GET /api/articles", () => {
        expect(response.body.articles).toBeSortedBy("title", {descending: true})
      })
   });
-  test('status 200: when requested return the articles body sorted by ascending order', () => {
+  test("status 200: when requested return the articles body sorted by ascending order", () => {
      return request(app)
      .get("/api/articles?sort_by=body&order_by=ASC")
      .expect(200)
@@ -188,7 +196,7 @@ describe("GET /api/articles", () => {
   });
 });
 
-describe("GET /api/articles/:article_id/comments", () => {
+  describe("GET/api/articles/:article_id/comments", () => {
   test("status 200: when selected by article_id should return with an array of comments", () => {
     return request(app)
       .get("/api/articles/1/comments")
@@ -227,7 +235,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("PATCH", () => {
-  describe("/api/articles/:article_id", () => {
+  describe("PATCH/api/articles/:article_id", () => {
     test("status: 200, responds with updated object", () => {
       const updateArticle = { votes: 100 };
       const expected = {
@@ -337,39 +345,39 @@ describe("POST", () => {
           expect(response.body).toEqual({ msg: "not found" });
         });
     });
-  });
+  });  
 });
 
-describe('DELETE', () => {
-   describe('/api/comments/:comment_id', () => {
-     test('status 204 : comment deleted by comment_id', () => {
-         return request(app)
-         .delete("/api/comments/1")
-         .expect(204)
-         .then((response) => {
-           expect(response.body).toEqual({})
+describe("DELETE", () => {
+  describe("/api/comments/:comment_id", () => {
+    test("status 204 : comment deleted by comment_id", () => {
+        return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+        .then((response) => {
+          expect(response.body).toEqual({})
 
-         })
-     });
-     test('status 404: return 404 when comment no found', () => {
-        return request(app)
-        .delete('/api/comments/12345')
-        .expect(404)
-        .then((response) => {
-          expect(response.body).toEqual({
-            msg: "not found"
-          })
         })
-      });
-      test('status 400: return 400 when comment_id invalid', () => {
-        return request(app)
-        .delete('/api/comments/banana')
-        .expect(400)
-        .then((response) => {
+    });
+    test("status 404: return 404 when comment no found", () => {
+       return request(app)
+       .delete("/api/comments/12345")
+       .expect(404)
+       .then((response) => {
          expect(response.body).toEqual({
-           msg: "bad request"
+           msg: "not found"
          })
        })
      });
-   });
-});
+     test("status 400: return 400 when comment_id invalid", () => {
+       return request(app)
+       .delete("/api/comments/banana")
+       .expect(400)
+       .then((response) => {
+        expect(response.body).toEqual({
+          msg: "bad request"
+        })
+      })
+    });
+  });
+})
